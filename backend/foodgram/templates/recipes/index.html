@@ -1,0 +1,9 @@
+{% include 'base.html' %}
+Главная страница
+
+{% for recipe in page_obj %}
+  {% include 'posts/includes/post_list.html' %} 
+  {% if not forloop.last %}<hr>{% endif %}
+  <!-- под последним постом нет линии -->
+{% endfor %}
+{% include 'recipes/include/pagination.html' %}
