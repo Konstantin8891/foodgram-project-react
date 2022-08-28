@@ -9,6 +9,19 @@ from rest_framework.mixins import (
 )
 
 
-class CreateListRetrieveViewSet(CreateModelMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class CreateListRetrieveViewSet(
+    CreateModelMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet
+):
     pass
 
+
+class CreateViewSet(CreateModelMixin, GenericViewSet):
+    pass
+
+
+class DestroyViewSet(DestroyModelMixin, GenericViewSet):
+    pass
+
+
+class CreateDestroyViewSet(CreateModelMixin, DestroyModelMixin, GenericViewSet):
+    pass
