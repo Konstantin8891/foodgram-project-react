@@ -38,7 +38,6 @@ class RecipeIngredient(models.Model):
 
 
 class ShoppingCart(models.Model):
-    # cart_id = models.BigAutoField(primary_key=True)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
