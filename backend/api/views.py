@@ -39,6 +39,7 @@ class UserListViewSet(CreateListRetrieveViewSet):
 class CurrentUser(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -85,10 +86,10 @@ class ObtainAuthToken(APIView):
         user = User.objects.get(email=email)
         token, created = Token.objects.get_or_create(user=user)
         content = {
-            'token': token.key,
+            'auth_token': token.key,
         }
 
-        return Response(content)
+        return Response(content, status=status.HTTP_201_CREATED)
     
 
 class DeleteToken(APIView):
