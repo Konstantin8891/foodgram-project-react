@@ -30,7 +30,7 @@ services:
     restart: always
     depends_on:
       - frontend
-    frontend:
+  frontend:
       image: konstantin05/foodgram_frontend:latest
       volumes:
         - ../frontend/:/app/result_build/
@@ -38,3 +38,6 @@ volumes:
   static_value:
   media_value:
   postgres_data:
+
+
+

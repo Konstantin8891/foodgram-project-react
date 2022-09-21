@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'backend_static')
-STATIC_ROOT = '/app/web/static'
+STATIC_ROOT = '/app/backend_static'
 
 MEDIA_URL = '/media_backend/'
 
 # MEDIA_ROOT = '/app/backend_media/'
-MEDIA_ROOT = '/app/web/media'
+MEDIA_ROOT = '/app/backend_media/posts/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
