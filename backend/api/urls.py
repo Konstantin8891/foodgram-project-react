@@ -6,10 +6,10 @@ from . import views
 app_name = 'api'
 
 router = DefaultRouter()
-router.register('users', views.UserListViewSet)
-router.register('tags', views.TagViewSet)
-router.register('ingredients', views.IngredientViewSet)
-router.register('recipes', views.RecipeViewSet)
+router.register('users', views.UserListViewSet, basename='users')
+router.register('tags', views.TagViewSet, basename='tags')
+router.register('ingredients', views.IngredientViewSet, basename='ingredients')
+router.register('recipes', views.RecipeViewSet, basename='recipes')
 
 urlpatterns = [
     path('users/me/', views.CurrentUser.as_view(), name='current_user'),

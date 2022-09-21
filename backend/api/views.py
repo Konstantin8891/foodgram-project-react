@@ -18,6 +18,8 @@ from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from .serializers import (
     FollowSerializer, RecipeViewSerializer, RecipeWriteSerializer, ShortRecipeSerializer, TagSerializer, UserSerializer, AuthCustomTokenSerializer,
     IngredientSerializer, 
@@ -25,7 +27,9 @@ from .serializers import (
 )
 from users.models import User
 from recipes.models import Recipe, Subscriber, Tag, Ingredient, ShoppingCart, RecipeIngredient, Favorite, Subscriber
+from .filters import IngredientSearchFilter
 from .mixins import CreateListRetrieveViewSet, CreateViewSet, DestroyViewSet
+from .pagination import SixPagination
 from .permissions import IsAuthorOrReadOnly
 
 
@@ -106,17 +110,34 @@ class DeleteToken(APIView):
 
 class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
+    pagination_class = None
     serializer_class = TagSerializer
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    pagination_class = None
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientSearchFilter
 
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = [IsAuthorOrReadOnly]
+    pagination_class = SixPagination
+
+    # def get_queryset(self):
+    #     if self.request.user.is_anonymous:
+    #         return Recipe.objects.all()
+    #     try:
+    #         favorite = self.request.query_params.get('is_favorited')
+    #         if favorite == 1:
+    #             fav_list = Favorite.objects.filter(author=self.request.user)
+    #             # print(fav_list.recipe)
+    #             return Recipe.objects.all()
+    #     except:
+    #         return Recipe.objects.all()
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
