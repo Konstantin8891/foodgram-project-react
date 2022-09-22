@@ -27,7 +27,7 @@ from .serializers import (
 )
 from users.models import User
 from recipes.models import Recipe, Subscriber, Tag, Ingredient, ShoppingCart, RecipeIngredient, Favorite, Subscriber
-from .filters import IngredientSearchFilter
+from .filters import IngredientSearchFilter, RecipeSearchFilter
 from .mixins import CreateListRetrieveViewSet, CreateViewSet, DestroyViewSet
 from .pagination import SixPagination
 from .permissions import IsAuthorOrReadOnly
@@ -126,6 +126,8 @@ class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = [IsAuthorOrReadOnly]
     pagination_class = SixPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeSearchFilter
 
     # def get_queryset(self):
     #     if self.request.user.is_anonymous:

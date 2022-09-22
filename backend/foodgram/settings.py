@@ -25,10 +25,10 @@ print(BASE_DIR)
 # STATIC_ROOT = os.path.join(BASE_DIR, 'backend_static')
 STATIC_ROOT = '/app/backend_static'
 
-MEDIA_URL = '/media_backend/'
+MEDIA_URL = '/api/media_backend/'
 
 # MEDIA_ROOT = '/app/backend_media/'
-MEDIA_ROOT = '/app/backend_media/posts/'
+MEDIA_ROOT = '/app/backend_media/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -47,7 +47,6 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
-    'core.apps.CoreConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
