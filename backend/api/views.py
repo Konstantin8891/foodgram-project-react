@@ -129,18 +129,6 @@ class RecipeViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeSearchFilter
 
-    # def get_queryset(self):
-    #     if self.request.user.is_anonymous:
-    #         return Recipe.objects.all()
-    #     try:
-    #         favorite = self.request.query_params.get('is_favorited')
-    #         if favorite == 1:
-    #             fav_list = Favorite.objects.filter(author=self.request.user)
-    #             # print(fav_list.recipe)
-    #             return Recipe.objects.all()
-    #     except:
-    #         return Recipe.objects.all()
-
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
             return RecipeViewSerializer
