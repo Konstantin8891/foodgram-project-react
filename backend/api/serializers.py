@@ -69,16 +69,38 @@ class UserSerializer(serializers.ModelSerializer):
             return False
 
 
+class UserCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name',
+            'username',
+            'last_name',
+            'email',
+            'password',
+            'id',
+        ]
+
+    def create(self, validated_data):
+        user = User.objects.create(**validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
+
+
 class RecipeViewSerializer(serializers.ModelSerializer):
     ingredients = serializers.SerializerMethodField(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
     author = UserSerializer(read_only=True)
     is_favorite = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
         fields = (
+            'id',
             'name',
             'image',
             'text',
@@ -92,6 +114,9 @@ class RecipeViewSerializer(serializers.ModelSerializer):
 
     def __str__(self):
         return self.name
+
+    def get_image(self, obj):
+        return obj.image.url
     
     def get_ingredients(self, obj):
         ingredients = RecipeIngredient.objects.filter(recipe=obj)
@@ -227,11 +252,12 @@ class FollowSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
-            'email',
             'id',
+            'email',
             'username',
             'first_name',
             'last_name',
@@ -239,18 +265,52 @@ class FollowSerializer(serializers.ModelSerializer):
             'recipes',
             'recipes_count'
         )
+        extra_kwargs = {
+            "email": {"read_only": True},
+            "id": {"read_only": True},
+            "username": {"read_only": True},
+            "first_name": {"read_only": True},
+            "last_name": {"read_only": True},
+        }
     
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        # print(self.context)
-        return Subscriber.objects.filter(author=obj, user=request.user).exists()
+        if request.user.is_anonymous:
+            return False
+        if hasattr(obj, 'author'):
+            return Subscriber.objects.filter(user=request.user, author=obj.author).exists()
+        else:
+            return Subscriber.objects.filter(user=request.user, author=obj).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
         context = {'request': request}
-        recipes = obj.recipes.filter(author=request.user)
+        # user = obj.author
+        # recipes = Recipe.objects.filter(author=user)
+        # return RecipeViewSerializer(recipes, many=True, context=context).data
+        # recipes = obj.recipes.filter(author=request.user)
+        limit = self.context.get('request').query_params.get('recipes_limit')
+        # recipes = Recipe.objects.filter(author=obj)[:int(limit)]
+        if limit:
+            if hasattr(obj, 'author'):
+                recipes = Recipe.objects.filter(author=obj.author)[:int(limit)]
+            else:
+                recipes = Recipe.objects.filter(author=obj)[:int(limit)]
+            # recipes = Recipe.objects.filter(author=obj)[:int(limit)]
+        else:
+            if hasattr(obj, 'author'):
+                recipes = Recipe.objects.filter(author=obj.author)
+            else:
+                recipes = Recipe.objects.filter(author=obj)
+            # recipes = Recipe.objects.filter(author=obj)
         return RecipeViewSerializer(recipes, many=True, context=context).data
 
     def get_recipes_count(self, obj):
         request = self.context.get('request')
-        return obj.recipes.filter(author=request.user).count()
+        # return obj.recipes.filter(author=request.user).count()
+        if hasattr(obj, 'author'):
+            user = obj.author
+        else:
+            user = obj
+        return Recipe.objects.filter(author=user).count()
+        # return obj.recipes.filter(author=request.user).count()

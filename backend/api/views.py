@@ -1,4 +1,4 @@
-import email
+# import email
 
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -20,6 +20,8 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from djoser.views import UserViewSet
+
 from .serializers import (
     FollowSerializer, RecipeViewSerializer, RecipeWriteSerializer, ShortRecipeSerializer, TagSerializer, UserSerializer, AuthCustomTokenSerializer,
     IngredientSerializer, 
@@ -31,81 +33,118 @@ from .filters import IngredientSearchFilter, RecipeSearchFilter
 from .mixins import CreateListRetrieveViewSet, CreateViewSet, DestroyViewSet
 from .pagination import SixPagination
 from .permissions import IsAuthorOrReadOnly
+from . import serializers
 
 
-class UserListViewSet(CreateListRetrieveViewSet):
+class UserViewSet(UserViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    # serializer_class = UserSerializer
     pagination_class = PageNumberPagination
-    lookup_field = 'id'
+    # lookup_field = 'id'
+
+    @action(detail=False, methods=['GET'], permission_classes=[IsAuthenticated])
+    def subscriptions(self, request):
+        print(request.user)
+        # queryset = User.objects.get(following__user=request.user)
+        pages = self.paginate_queryset(
+            Subscriber.objects.filter(user=request.user)
+        )
+        print(pages)
+        serializer = FollowSerializer(
+            pages, many=True, context={'request': request}
+        )
+        return self.get_paginated_response(serializer.data)
+
+    @action(detail=True, methods=['DELETE', 'POST'], permission_classes=[IsAuthenticated], url_path='subscribe')
+    def subscribe(self, request, id):
+        if request.method == 'POST':
+            author = User.objects.get(id=id)
+            Subscriber.objects.get_or_create(
+                author=author, user=request.user
+            )
+            author = User.objects.get(id=self.request.user.id)
+            # print(self.request.user.id)
+            context = {'request': request}
+            serializer = FollowSerializer(instance=author, context=context)
+            # serializer.is_valid()
+            # print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+        if request.method == 'DELETE':
+            # author = User.objects.get(id=id)
+            try:
+                Subscriber.objects.get(id=id).delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class CurrentUser(generics.RetrieveAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = User.objects.all()
+# class CurrentUser(generics.RetrieveAPIView):
+#     serializer_class = UserSerializer
+#     permission_classes = [IsAuthenticated]
+#     queryset = User.objects.all()
 
-    def get_object(self):
-        queryset = self.filter_queryset(self.get_queryset())
-        obj = queryset.get(pk=self.request.user.id)
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-
-class SetPasswordAPIView(APIView):
-    def post(self, request):
-        if request.user.is_anonymous:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        try:
-            data = request.data['current_password']
-        except:
-            return Response(data={'current_password': ["Обязательное поле."]}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            data = request.data['new_password']
-        except:
-            return Response(data={'new_password': ["Обязательное поле."]}, status=status.HTTP_400_BAD_REQUEST)
-        if request.user.password != request.data['current_password']:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.get(username=request.user.username)
-        serializer = UserSerializer(user, data={'password': request.data['new_password']}, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#     def get_object(self):
+#         queryset = self.filter_queryset(self.get_queryset())
+#         obj = queryset.get(pk=self.request.user.id)
+#         self.check_object_permissions(self.request, obj)
+#         return obj
 
 
-class ObtainAuthToken(APIView):
-    throttle_classes = ()
-    permission_classes = ()
-    parser_classes = (
-        parsers.FormParser,
-        parsers.MultiPartParser,
-        parsers.JSONParser,
-    )
-    renderer_classes = (renderers.JSONRenderer,)
+# class SetPasswordAPIView(APIView):
+#     def post(self, request):
+#         if request.user.is_anonymous:
+#             return Response(status=status.HTTP_401_UNAUTHORIZED)
+#         try:
+#             data = request.data['current_password']
+#         except:
+#             return Response(data={'current_password': ["Обязательное поле."]}, status=status.HTTP_400_BAD_REQUEST)
+#         try:
+#             data = request.data['new_password']
+#         except:
+#             return Response(data={'new_password': ["Обязательное поле."]}, status=status.HTTP_400_BAD_REQUEST)
+#         if request.user.password != request.data['current_password']:
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
+#         user = User.objects.get(username=request.user.username)
+#         serializer = UserSerializer(user, data={'password': request.data['new_password']}, partial=True)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def post(self, request):
-        serializer = AuthCustomTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data['email']
-        user = User.objects.get(email=email)
-        token, created = Token.objects.get_or_create(user=user)
-        content = {
-            'auth_token': token.key,
-        }
 
-        return Response(content, status=status.HTTP_201_CREATED)
+# class ObtainAuthToken(APIView):
+#     throttle_classes = ()
+#     permission_classes = ()
+#     parser_classes = (
+#         parsers.FormParser,
+#         parsers.MultiPartParser,
+#         parsers.JSONParser,
+#     )
+#     renderer_classes = (renderers.JSONRenderer,)
+
+#     def post(self, request):
+#         serializer = AuthCustomTokenSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         email = serializer.validated_data['email']
+#         user = User.objects.get(email=email)
+#         token, created = Token.objects.get_or_create(user=user)
+#         content = {
+#             'auth_token': token.key,
+#         }
+
+#         return Response(content, status=status.HTTP_201_CREATED)
     
 
-class DeleteToken(APIView):
+# class DeleteToken(APIView):
 
-    def post(self, request):
-        try:
-            instance = self.request.headers['authorization']
-            instance = instance[6:]
-            instance = Token.objects.get(key=instance).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+#     def post(self, request):
+#         try:
+#             instance = self.request.headers['authorization']
+#             instance = instance[6:]
+#             instance = Token.objects.get(key=instance).delete()
+#             return Response(status=status.HTTP_204_NO_CONTENT)
+#         except:
+#             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -222,24 +261,24 @@ class RecipeViewSet(ModelViewSet):
                 return Response(data='рецепта в избранном нет', status=status.HTTP_400_BAD_REQUEST)
 
 
-class CreateDestroyFollowerAPIView(APIView):
-    def post(self, request, id):
-        author = User.objects.get(id=id)
-        Subscriber.objects.get_or_create(
-            author=author, user=request.user
-        )
-        author = User.objects.get(id=self.request.user.id)
-        # print(self.request.user.id)
-        context = {'request': request}
-        serializer = FollowSerializer(instance=author, context=context)
-        # serializer.is_valid()
-        # print(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+# class CreateDestroyFollowerAPIView(APIView):
+#     def post(self, request, id):
+#         author = User.objects.get(id=id)
+#         Subscriber.objects.get_or_create(
+#             author=author, user=request.user
+#         )
+#         author = User.objects.get(id=self.request.user.id)
+#         # print(self.request.user.id)
+#         context = {'request': request}
+#         serializer = FollowSerializer(instance=author, context=context)
+#         # serializer.is_valid()
+#         # print(serializer.data)
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def delete(self, request, id):
-        author = User.objects.get(id=id)
-        try:
-            Subscriber.objects.get(author=author, user=request.user).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+#     def delete(self, request, id):
+#         author = User.objects.get(id=id)
+#         try:
+#             Subscriber.objects.get(author=author, user=request.user).delete()
+#             return Response(status=status.HTTP_204_NO_CONTENT)
+#         except:
+#             return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -1,2 +1,1 @@
-test1: Ingredient object (1) - 1
-test1: Ingredient object (2) - 2
+test3: Ingredient object (1410) - 100
