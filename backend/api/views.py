@@ -16,11 +16,11 @@ from rest_framework import parsers, renderers
 from rest_framework.authtoken.models import Token
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from djoser.views import UserViewSet
+from djoser.views import UserViewSet as DjoserUserViewSet
 
 from .serializers import (
     FollowSerializer, RecipeViewSerializer, RecipeWriteSerializer, ShortRecipeSerializer, TagSerializer, UserSerializer, AuthCustomTokenSerializer,
@@ -36,24 +36,34 @@ from .permissions import IsAuthorOrReadOnly
 from . import serializers
 
 
-class UserViewSet(UserViewSet):
+class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
     # serializer_class = UserSerializer
     pagination_class = PageNumberPagination
     # lookup_field = 'id'
 
-    @action(detail=False, methods=['GET'], permission_classes=[IsAuthenticated])
+    # @action(detail=False, methods=['GET'], permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=['GET'])
     def subscriptions(self, request):
-        print(request.user)
+        queryset = User.objects.filter(id__in=Subscriber.objects.filter(user=request.user).values_list('author_id', flat=True))
+        # print(request.user)
         # queryset = User.objects.get(following__user=request.user)
-        pages = self.paginate_queryset(
-            Subscriber.objects.filter(user=request.user)
-        )
-        print(pages)
-        serializer = FollowSerializer(
-            pages, many=True, context={'request': request}
-        )
-        return self.get_paginated_response(serializer.data)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = FollowSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = FollowSerializer(queryset, many=True)
+        return Response(serializer.data)
+        # pages = self.paginate_queryset(
+        #     Subscriber.objects.filter(user=request.user)
+        # )
+        # print(pages)
+        # serializer = FollowSerializer(
+        #     pages, many=True, context={'request': request}
+        # )
+        # return self.get_paginated_response(serializer.data)
 
     @action(detail=True, methods=['DELETE', 'POST'], permission_classes=[IsAuthenticated], url_path='subscribe')
     def subscribe(self, request, id):

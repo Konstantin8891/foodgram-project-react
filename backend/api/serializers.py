@@ -47,6 +47,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
+
     class Meta:
         model = User
         fields = [
@@ -56,7 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'id',
-            'is_subscribed'
+            'is_subscribed',
         ]
 
     def get_is_subscribed(self, obj):
@@ -93,7 +94,7 @@ class RecipeViewSerializer(serializers.ModelSerializer):
     ingredients = serializers.SerializerMethodField(read_only=True)
     tags = TagSerializer(read_only=True, many=True)
     author = UserSerializer(read_only=True)
-    is_favorite = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
 
@@ -107,7 +108,7 @@ class RecipeViewSerializer(serializers.ModelSerializer):
             'ingredients',
             'tags',
             'cooking_time',
-            'is_favorite',
+            'is_favorited',
             'is_in_shopping_cart',
             'author'
         )
@@ -122,7 +123,7 @@ class RecipeViewSerializer(serializers.ModelSerializer):
         ingredients = RecipeIngredient.objects.filter(recipe=obj)
         return RecipeIngredientSerializer(ingredients, many=True).data
 
-    def get_is_favorite(self, obj):
+    def get_is_favorited(self, obj):
         request = self.context.get('request')
         if request.user.is_anonymous:
             return False
@@ -274,6 +275,7 @@ class FollowSerializer(serializers.ModelSerializer):
         }
     
     def get_is_subscribed(self, obj):
+        # return True
         request = self.context.get('request')
         if request.user.is_anonymous:
             return False
@@ -283,13 +285,16 @@ class FollowSerializer(serializers.ModelSerializer):
             return Subscriber.objects.filter(user=request.user, author=obj).exists()
 
     def get_recipes(self, obj):
+        # return []
+        print(self.context)
         request = self.context.get('request')
+        print(request)
         context = {'request': request}
         # user = obj.author
         # recipes = Recipe.objects.filter(author=user)
         # return RecipeViewSerializer(recipes, many=True, context=context).data
         # recipes = obj.recipes.filter(author=request.user)
-        limit = self.context.get('request').query_params.get('recipes_limit')
+        limit = self.context.get('request').query_params.get('recipes_limit') #
         # recipes = Recipe.objects.filter(author=obj)[:int(limit)]
         if limit:
             if hasattr(obj, 'author'):
