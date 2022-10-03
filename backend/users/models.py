@@ -16,3 +16,17 @@ class User(AbstractUser):
 
     class Meta:
         unique_together = ('username', 'email')
+
+
+class Subscriber(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower'
+    )
+    # id
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following'
+    )

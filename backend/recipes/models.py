@@ -61,17 +61,3 @@ class Favorite(models.Model):
         on_delete=models.CASCADE,
         related_name='favorite'
     )
-
-
-class Subscriber(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='follower'
-    )
-    # id
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='following'
-    )

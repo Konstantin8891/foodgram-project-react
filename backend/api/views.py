@@ -25,10 +25,10 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from .serializers import (
     FollowSerializer, RecipeViewSerializer, RecipeWriteSerializer, ShortRecipeSerializer, TagSerializer, UserSerializer, AuthCustomTokenSerializer,
     IngredientSerializer, 
-    ShoppingCartCreateSerializer, RecipeWriteSerializer
+    RecipeWriteSerializer
 )
-from users.models import User
-from recipes.models import Recipe, Subscriber, Tag, Ingredient, ShoppingCart, RecipeIngredient, Favorite, Subscriber
+from users.models import User, Subscriber
+from recipes.models import Recipe, Tag, Ingredient, ShoppingCart, RecipeIngredient, Favorite
 from .filters import IngredientSearchFilter, RecipeSearchFilter
 from .mixins import CreateListRetrieveViewSet, CreateViewSet, DestroyViewSet
 from .pagination import SixPagination
@@ -38,23 +38,22 @@ from . import serializers
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     # serializer_class = UserSerializer
     pagination_class = PageNumberPagination
     # lookup_field = 'id'
 
-    # @action(detail=False, methods=['GET'], permission_classes=[IsAuthenticated])
-    @action(detail=False, methods=['GET'])
+    @action(detail=False, methods=['GET'], permission_classes=[IsAuthenticated])
+    # @action(detail=False, methods=['GET'])
     def subscriptions(self, request):
         queryset = User.objects.filter(id__in=Subscriber.objects.filter(user=request.user).values_list('author_id', flat=True))
-        # print(request.user)
-        # queryset = User.objects.get(following__user=request.user)
+        # queryset = User.objects.filter(following__user=request.user)
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = FollowSerializer(page, many=True)
+            serializer = FollowSerializer(page, many=True, context={"request": request,})
             return self.get_paginated_response(serializer.data)
 
-        serializer = FollowSerializer(queryset, many=True)
+        serializer = FollowSerializer(queryset, many=True, context={"request": request,})
         return Response(serializer.data)
         # pages = self.paginate_queryset(
         #     Subscriber.objects.filter(user=request.user)
@@ -81,9 +80,13 @@ class UserViewSet(DjoserUserViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     
         if request.method == 'DELETE':
-            # author = User.objects.get(id=id)
+            # # author = User.objects.get(id=id)
+            # try:
+            #     Subscriber.objects.filter(id=id).delete()
+            #     return Response(status=status.HTTP_204_NO_CONTENT)
+            author = User.objects.get(id=id)
             try:
-                Subscriber.objects.get(id=id).delete()
+                Subscriber.objects.filter(author=author, user=request.user).delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             except:
                 return Response(status=status.HTTP_400_BAD_REQUEST)

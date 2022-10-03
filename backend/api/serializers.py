@@ -7,10 +7,9 @@ from rest_framework import serializers, exceptions
 import webcolors
 
 from recipes.models import (
-    ShoppingCart, Tag, Ingredient, Recipe, RecipeIngredient, Favorite, Subscriber
+    ShoppingCart, Tag, Ingredient, Recipe, RecipeIngredient, Favorite
 )
-from users.models import User
-from recipes.models import Subscriber
+from users.models import User, Subscriber
 from .base64 import Base64ImageField
 from .hex import Hex2NameColor
 
@@ -38,10 +37,11 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    name = serializers.ReadOnlyField(source='ingredient.name')
 
     class Meta:
         model = RecipeIngredient
-        fields = ('id', 'amount')
+        fields = ('id', 'name', 'amount')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -277,6 +277,7 @@ class FollowSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         # return True
         request = self.context.get('request')
+        # print(request)
         if request.user.is_anonymous:
             return False
         if hasattr(obj, 'author'):
@@ -286,9 +287,9 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_recipes(self, obj):
         # return []
-        print(self.context)
+        # print(self.context)
         request = self.context.get('request')
-        print(request)
+        # print(request)
         context = {'request': request}
         # user = obj.author
         # recipes = Recipe.objects.filter(author=user)
