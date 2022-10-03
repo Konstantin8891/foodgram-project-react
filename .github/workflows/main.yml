@@ -1,6 +1,9 @@
 name: Django-app workflow
 
-on: [push]
+on: 
+  push:
+    paths-ignore:
+      - '**/README.md'
 
 jobs:
   tests:
@@ -54,6 +57,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
+          sudo docker pull konstantin05/foodgram_backend:latest
           sudo docker-compose stop
           sudo docker system prune -f
           touch .env
