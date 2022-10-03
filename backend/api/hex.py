@@ -16,4 +16,4 @@ class Hex2NameColor(serializers.Field):
             # Иначе возвращаем ошибку
             raise serializers.ValidationError("Для этого цвета нет имени")
         # Возвращаем данные в новом формате
-        return data
+        return webcolors.hex_to_name(data)

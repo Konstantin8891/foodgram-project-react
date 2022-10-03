@@ -68,7 +68,6 @@ class UserViewSet(DjoserUserViewSet):
             context = {"request": request}
             serializer = FollowSerializer(instance=author, context=context)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         if request.method == "DELETE":
             author = User.objects.get(id=id)
             try:
