@@ -1,21 +1,28 @@
 from django.contrib import admin
 
-from recipes.models import Tag, Ingredient, Recipe, RecipeIngredient, ShoppingCart, Favorite
+from recipes.models import (
+    Tag,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Favorite,
+)
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('slug', 'name', 'color')
+    list_display = ("slug", "name", "color")
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'measurement_unit')
-    list_filter = ('name',)
+    list_display = ("name", "measurement_unit")
+    list_filter = ("name",)
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('author', 'name', 'favorites')
-    search_fields = ('text',)
-    list_filter = ('author', 'name', 'tags')
+    list_display = ("author", "name", "favorites")
+    search_fields = ("text",)
+    list_filter = ("author", "name", "tags")
 
     def favorites(self, obj):
         fav = Favorite.objects.filter(recipe=obj)
@@ -23,15 +30,15 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class RecipeIngredienAdmin(admin.ModelAdmin):
-    list_display = ('recipe', 'ingredient', 'amount')
+    list_display = ("recipe", "ingredient", "amount")
 
 
 class ShoppingCartAdmin(admin.ModelAdmin):
-    list_display = ('author', 'recipe')
+    list_display = ("author", "recipe")
 
 
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('author', 'recipe')
+    list_display = ("author", "recipe")
 
 
 admin.site.register(Tag, TagAdmin)
@@ -40,4 +47,3 @@ admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(RecipeIngredient, RecipeIngredienAdmin)
 admin.site.register(ShoppingCart, ShoppingCartAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
-

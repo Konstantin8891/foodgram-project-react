@@ -1,7 +1,7 @@
 from csv import DictReader
 from django.core.management import BaseCommand
 
-# Import the model 
+# Import the model
 from recipes.models import Ingredient
 
 
@@ -17,19 +17,20 @@ class Command(BaseCommand):
     help = "Loads data from ingredients.csv"
 
     def handle(self, *args, **options):
-    
+
         # Show this if the data already exist in the database
         if Ingredient.objects.exists():
-            print('ingredients data already loaded...exiting.')
+            print("ingredients data already loaded...exiting.")
             print(ALREDY_LOADED_ERROR_MESSAGE)
             return
-            
+
         # Show this before loading the data into the database
         print("Loading ingredients data")
 
-
-        #Code to load the data into database
-        for row in DictReader(open('./ingredients.csv')):
-            ing=Ingredient(name=row['name'], measurement_unit=row['measurement_unit'])  
+        # Code to load the data into database
+        for row in DictReader(open("./ingredients.csv")):
+            ing = Ingredient(
+                name=row["name"],
+                measurement_unit=row["measurement_unit"]
+            )
             ing.save()
-            

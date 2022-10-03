@@ -1,20 +1,21 @@
 from django_filters.rest_framework import FilterSet
-from django_filters.rest_framework.filters import (ModelChoiceFilter,
-                                                   AllValuesMultipleFilter,
-                                                   BooleanFilter, CharFilter)
-
-from rest_framework.filters import SearchFilter
+from django_filters.rest_framework.filters import (
+    ModelChoiceFilter,
+    AllValuesMultipleFilter,
+    BooleanFilter,
+    CharFilter,
+)
 
 from recipes.models import Ingredient, Recipe
 from users.models import User
 
 
 class IngredientSearchFilter(FilterSet):
-    name = CharFilter(lookup_expr='istartswith')
+    name = CharFilter(lookup_expr="istartswith")
 
     class Meta:
         model = Ingredient
-        fields = ('name',)
+        fields = ("name",)
 
 
 class RecipeSearchFilter(FilterSet):
@@ -37,4 +38,9 @@ class RecipeSearchFilter(FilterSet):
 
     class Meta:
         model = Recipe
-        fields = ["tags__slug", "author", "is_favorited", "is_in_shopping_cart"]
+        fields = [
+            "tags__slug",
+            "author",
+            "is_favorited",
+            "is_in_shopping_cart"
+        ]
