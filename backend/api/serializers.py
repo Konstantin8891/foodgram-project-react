@@ -1,16 +1,10 @@
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
-from rest_framework import serializers, exceptions
+from django.shortcuts import get_object_or_404
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingCart, Tag)
+from rest_framework import exceptions, serializers
+from users.models import Subscriber, User
 
-from recipes.models import (
-    ShoppingCart,
-    Tag,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    Favorite,
-)
-from users.models import User, Subscriber
 from .base64 import Base64ImageField
 from .hex import Hex2NameColor
 
