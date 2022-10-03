@@ -68,15 +68,14 @@ class UserViewSet(DjoserUserViewSet):
             context = {"request": request}
             serializer = FollowSerializer(instance=author, context=context)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if request.method == "DELETE":
-            author = User.objects.get(id=id)
-            try:
-                Subscriber.objects.filter(
-                    author=author, user=request.user
-                ).delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            except Exception:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+        author = User.objects.get(id=id)
+        try:
+            Subscriber.objects.filter(
+                author=author, user=request.user
+            ).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -155,14 +154,13 @@ class RecipeViewSet(ModelViewSet):
                 return self.create_instance(
                     author=request.user, recipe_id=pk, model=ShoppingCart
                 )
-        if request.method == "DELETE":
-            try:
-                return self.delete_instance(request.user, pk, ShoppingCart)
-            except Exception:
-                return Response(
-                    data="рецепта в списке покупок нет",
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        try:
+            return self.delete_instance(request.user, pk, ShoppingCart)
+        except Exception:
+            return Response(
+                data="рецепта в списке покупок нет",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     @action(
         detail=False,
@@ -185,10 +183,8 @@ class RecipeViewSet(ModelViewSet):
         f = open("shopping_cart.txt", "w")
         for shopping in shopping_list:
             f.write(shopping)
-
-        response = HttpResponse(shopping_list, content_type="text/plain")
         f.close()
-        return response
+        return HttpResponse(shopping_list, content_type="text/plain")
 
     @action(
         detail=True,
@@ -207,11 +203,10 @@ class RecipeViewSet(ModelViewSet):
                 return self.create_instance(
                     author=request.user, recipe_id=pk, model=Favorite
                 )
-        if request.method == "DELETE":
-            try:
-                return self.delete_instance(request.user, pk, Favorite)
-            except Exception:
-                return Response(
-                    data="рецепта в избранном нет",
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        try:
+            return self.delete_instance(request.user, pk, Favorite)
+        except Exception:
+            return Response(
+                data="рецепта в избранном нет",
+                status=status.HTTP_400_BAD_REQUEST
+            )
