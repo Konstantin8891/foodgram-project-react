@@ -36,7 +36,7 @@ c!09bx3"""
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["84.201.142.121", "http://konstantin05.ddns.net", "backend"]
+ALLOWED_HOSTS = ["84.201.142.121", "konstantin05.ddns.net", "backend"]
 
 
 INSTALLED_APPS = [
