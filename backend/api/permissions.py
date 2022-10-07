@@ -3,9 +3,8 @@ from rest_framework import permissions
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.method == "POST":
-            return request.user.is_authenticated
-        return True
+        return (request.user.is_authenticated 
+                or request.method in SAFE_METHODS)
 
     def has_object_permission(self, request, view, obj):
         return (

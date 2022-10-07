@@ -1,12 +1,17 @@
-from django.contrib.auth import authenticate
-from django.shortcuts import get_object_or_404
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingCart, Tag)
-from rest_framework import exceptions, serializers
-from users.models import Subscriber, User
+from rest_framework import serializers
 
-from .base64 import Base64ImageField
-from .hex import Hex2NameColor
+from .utils.base64 import Base64ImageField
+from .utils.hex import Hex2NameColor
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
+from users.models import User
+from users.serializers import UserSerializer
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -36,50 +41,6 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ("id", "name", "amount")
-
-
-class UserSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField()
-
-    class Meta:
-        model = User
-        fields = [
-            "first_name",
-            "username",
-            "last_name",
-            "email",
-            "password",
-            "id",
-            "is_subscribed",
-        ]
-
-    def get_is_subscribed(self, obj):
-        request = self.context.get("request")
-        if request.user.is_anonymous:
-            return False
-        elif Subscriber.objects.filter(user=request.user, author=obj).exists():
-            return True
-        else:
-            return False
-
-
-class UserCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = [
-            "first_name",
-            "username",
-            "last_name",
-            "email",
-            "password",
-            "id",
-        ]
-
-    def create(self, validated_data):
-        user = User.objects.create(**validated_data)
-        user.set_password(validated_data["password"])
-        user.save()
-        return user
 
 
 class RecipeViewSerializer(serializers.ModelSerializer):
@@ -128,9 +89,7 @@ class RecipeViewSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request.user.is_anonymous:
             return False
-        elif ShoppingCart.objects.filter(
-            author=request.user, recipe=obj
-        ).exists():
+        elif ShoppingCart.objects.filter(author=request.user, recipe=obj).exists():
             return True
         else:
             return False
@@ -138,10 +97,7 @@ class RecipeViewSerializer(serializers.ModelSerializer):
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientSerializer(many=True)
-    tags = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Tag.objects.all()
-    )
+    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
     image = Base64ImageField(
         max_length=None,
         use_url=True,
@@ -149,14 +105,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = (
-            "name",
-            "image",
-            "text",
-            "ingredients",
-            "tags",
-            "cooking_time"
-        )
+        fields = ("name", "image", "text", "ingredients", "tags", "cooking_time")
 
     def __str__(self):
         return self.name
@@ -216,36 +165,13 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
         fields = ("id", "name", "image", "cooking_time")
 
 
-class AuthCustomTokenSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField()
-
-    def validate(self, attrs):
-        email = attrs.get("email")
-        password = attrs.get("password")
-        if email and password:
-            user_request = get_object_or_404(
-                User,
-                email=email,
-            )
-            email = user_request.email
-            user = authenticate(username=email, password=password)
-        else:
-            msg = 'Must include "email" and "password"'
-            raise exceptions.ValidationError(msg)
-        attrs["user"] = user
-        return attrs
-
-
 class ShoppingCartCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingCart
         fields = ("author", "recipe")
 
     def to_representation(self, instance):
-        return ShortRecipeSerializer(
-            instance.recipe, context=self.context
-        ).data
+        return ShortRecipeSerializer(instance.recipe, context=self.context).data
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -282,9 +208,7 @@ class FollowSerializer(serializers.ModelSerializer):
                 user=request.user, author=obj.author
             ).exists()
         else:
-            return Subscriber.objects.filter(
-                user=request.user, author=obj
-            ).exists()
+            return Subscriber.objects.filter(user=request.user, author=obj).exists()
 
     def get_recipes(self, obj):
         request = self.context.get("request")
@@ -292,9 +216,7 @@ class FollowSerializer(serializers.ModelSerializer):
         limit = self.context.get("request").query_params.get("recipes_limit")
         if limit:
             if hasattr(obj, "author"):
-                recipes = Recipe.objects.filter(
-                    author=obj.author
-                )[: int(limit)]
+                recipes = Recipe.objects.filter(author=obj.author)[: int(limit)]
             else:
                 recipes = Recipe.objects.filter(author=obj)[: int(limit)]
         else:
@@ -305,8 +227,5 @@ class FollowSerializer(serializers.ModelSerializer):
         return RecipeViewSerializer(recipes, many=True, context=context).data
 
     def get_recipes_count(self, obj):
-        if hasattr(obj, "author"):
-            user = obj.author
-        else:
-            user = obj
+        user = obj.author
         return Recipe.objects.filter(author=user).count()

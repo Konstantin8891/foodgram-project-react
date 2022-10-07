@@ -16,7 +16,6 @@ class Subscriber(models.Model):
         on_delete=models.CASCADE,
         related_name="follower"
     )
-    # id
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

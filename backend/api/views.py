@@ -1,23 +1,36 @@
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
+
 from djoser.views import UserViewSet as DjoserUserViewSet
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingCart, Tag)
+
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from users.models import Subscriber, User
 
 from .filters import IngredientSearchFilter, RecipeSearchFilter
 from .pagination import SixPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (FollowSerializer, IngredientSerializer,
-                          RecipeViewSerializer, RecipeWriteSerializer,
-                          ShortRecipeSerializer, TagSerializer)
+from .serializers import (
+    FollowSerializer,
+    IngredientSerializer,
+    RecipeViewSerializer,
+    RecipeWriteSerializer,
+    ShortRecipeSerializer,
+    TagSerializer
+)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag
+)
+from users.models import Subscriber, User
 
 
 class UserViewSet(DjoserUserViewSet):
