@@ -15,7 +15,7 @@ MEDIA_ROOT = "/app/backend_media/"
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["84.201.142.121", "konstantin05.ddns.net", "backend"]
 
