@@ -10,7 +10,7 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from users.models import User
+from users.models import User, Subscriber
 from users.serializers import UserSerializer
 
 
@@ -89,15 +89,22 @@ class RecipeViewSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request.user.is_anonymous:
             return False
-        elif ShoppingCart.objects.filter(author=request.user, recipe=obj).exists():
+        elif ShoppingCart.objects.filter(
+            author=request.user, recipe=obj
+        ).exists():
             return True
         else:
             return False
 
 
-class RecipeWriteSerializer(serializers.ModelSerializer):
+class RecipeWriteSerializer(
+    serializers.ModelSerializer
+):
     ingredients = RecipeIngredientSerializer(many=True)
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all()
+    )
     image = Base64ImageField(
         max_length=None,
         use_url=True,
@@ -105,7 +112,14 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ("name", "image", "text", "ingredients", "tags", "cooking_time")
+        fields = (
+            "name",
+            "image",
+            "text",
+            "ingredients",
+            "tags",
+            "cooking_time"
+        )
 
     def __str__(self):
         return self.name
@@ -171,7 +185,9 @@ class ShoppingCartCreateSerializer(serializers.ModelSerializer):
         fields = ("author", "recipe")
 
     def to_representation(self, instance):
-        return ShortRecipeSerializer(instance.recipe, context=self.context).data
+        return ShortRecipeSerializer(
+            instance.recipe, context=self.context
+        ).data
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -208,7 +224,9 @@ class FollowSerializer(serializers.ModelSerializer):
                 user=request.user, author=obj.author
             ).exists()
         else:
-            return Subscriber.objects.filter(user=request.user, author=obj).exists()
+            return Subscriber.objects.filter(
+                user=request.user, author=obj
+            ).exists()
 
     def get_recipes(self, obj):
         request = self.context.get("request")
@@ -216,7 +234,9 @@ class FollowSerializer(serializers.ModelSerializer):
         limit = self.context.get("request").query_params.get("recipes_limit")
         if limit:
             if hasattr(obj, "author"):
-                recipes = Recipe.objects.filter(author=obj.author)[: int(limit)]
+                recipes = Recipe.objects.filter(author=obj.author)[
+                    : int(limit)
+                ]
             else:
                 recipes = Recipe.objects.filter(author=obj)[: int(limit)]
         else:

@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from .models import User, Subscriber
-from recipes.models import Recipe
 
 
 class UserSerializer(serializers.ModelSerializer):
