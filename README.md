@@ -67,3 +67,268 @@ sudo docker-compose exec backend python manage.py load_data
     Для модели рецептов включена фильтрация по названию, автору и тегам.
     На админ-странице рецепта отображается общее число добавлений этого рецепта в избранное.
     Для модели ингредиентов включена фильтрация по названию.
+    
+## API
+
+Реализован API. 
+
+Алгоритм регистрации пользователей
+
+Пользователь отправляет POST-запрос на добавление нового пользователя с параметрами email, username, first_name, last_name, password на конечную точку /api/users/.
+Пользователь отправляет POST-запрос с параметрами email и password на конечную точку /api/auth/token/login/, в ответе на запрос ему приходит token (JWT-токен).
+
+Пользовательские роли Аноним — может просматривать описания произведений, читать отзывы и комментарии. Аутентифицированный пользователь (user) — может, как и Аноним, читать всё, дополнительно он может публиковать отзывы и ставить оценку произведениям (фильмам/книгам/песенкам), может комментировать чужие отзывы; может редактировать и удалять свои отзывы и комментарии. Эта роль присваивается по умолчанию каждому новому пользователю. Модератор (moderator) — те же права, что и у Аутентифицированного пользователя плюс право удалять любые отзывы и комментарии. Администратор (admin) — полные права на управление всем контентом проекта. Может создавать и удалять произведения, категории и жанры. Может назначать роли пользователям. Суперюзер Django — обладет правами администратора (admin)
+
+Примеры запросов к API(с полным списком пользователей можете ознакомиться по uri api/docs/):
+
+1. get Получение списка тэгов api/tags/:
+
+    Права доступа: все.
+
+    Ответ:
+
+{
+    "id": 0,
+    "name": "Завтрак",
+    "color": "#E26C2D",
+    "slug": "breakfast"
+}
+
+2. get Получение списка рецептов api/recipes/
+
+    Права доступа: все.
+    
+    Ответ:
+
+{
+
+    "count": 123,
+    "next": "http://foodgram.example.org/api/recipes/?page=4",
+    "previous": "http://foodgram.example.org/api/recipes/?page=2",
+    "results": 
+
+[
+
+{
+
+    "id": 0,
+    "tags": 
+
+[],
+"author": 
+{},
+"ingredients": 
+
+            [],
+            "is_favorited": true,
+            "is_in_shopping_cart": true,
+            "name": "string",
+            "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+            "text": "string",
+            "cooking_time": 1
+        }
+    ]
+
+}
+
+3. post Добавление нового рецепта api/recipes
+
+    Запрос:
+
+{
+
+    "ingredients": 
+
+[
+
+    {
+        "id": 1123,
+        "amount": 10
+    }
+
+],
+"tags": 
+
+    [
+        1,
+        2
+    ],
+    "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
+    "name": "string",
+    "text": "string",
+    "cooking_time": 1
+
+}
+
+    Права доступа: авторизованный пользователь
+
+    Ответ:
+
+{
+
+    "id": 0,
+    "tags": 
+
+[
+
+    {}
+
+],
+"author": 
+{
+
+    "email": "user@example.com",
+    "id": 0,
+    "username": "string",
+    "first_name": "Вася",
+    "last_name": "Пупкин",
+    "is_subscribed": false
+
+},
+"ingredients": 
+[
+
+        {}
+    ],
+    "is_favorited": true,
+    "is_in_shopping_cart": true,
+    "name": "string",
+    "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+    "text": "string",
+    "cooking_time": 1
+
+}
+
+4. get Получение рецепта api/recipes/{recipe_id}/
+
+    Права доступа: все
+
+    Ответ:
+
+{
+    "id": 0,
+    "tags": 
+[
+    {}
+],
+"author": 
+{
+    "email": "user@example.com",
+    "id": 0,
+    "username": "string",
+    "first_name": "Вася",
+    "last_name": "Пупкин",
+    "is_subscribed": false
+},
+"ingredients": 
+[
+        {}
+    ],
+    "is_favorited": true,
+    "is_in_shopping_cart": true,
+    "name": "string",
+    "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+    "text": "string",
+    "cooking_time": 1
+
+}
+
+5. post Добавить рецепт в избранное api/recipes/{id}/favorite/
+
+    Права доступа: авторизованный пользователь
+
+    Ответ:
+
+{
+
+    "id": 0,
+    "name": "string",
+    "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+    "cooking_time": 1
+
+}
+
+6. delete Удалить рецепт из избранного api/recipes/{id}/favorite/
+
+Права доступа: авторизованный пользователь
+
+7. get Получить список подписок api/users/subscriptions/
+
+    Права доступа: авторизованный пользователь 
+    
+    Ответ:
+
+{
+
+    "count": 123,
+    "next": "http://foodgram.example.org/api/users/subscriptions/?page=4",
+    "previous": "http://foodgram.example.org/api/users/subscriptions/?page=2",
+    "results": 
+
+[
+
+{
+
+    "email": "user@example.com",
+    "id": 0,
+    "username": "string",
+    "first_name": "Вася",
+    "last_name": "Пупкин",
+    "is_subscribed": true,
+    "recipes": 
+
+            [],
+            "recipes_count": 0
+        }
+    ]
+
+}
+
+8. post Подписаться на пользователя api/users/{id}/subscribe/
+
+    Права доступа: авторизованный пользователь.
+
+    Ответ:
+
+{
+
+    "email": "user@example.com",
+    "id": 0,
+    "username": "string",
+    "first_name": "Вася",
+    "last_name": "Пупкин",
+    "is_subscribed": true,
+    "recipes": 
+
+[
+
+        {
+            "id": 0,
+            "name": "string",
+            "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+            "cooking_time": 1
+        }
+    ],
+    "recipes_count": 0
+
+}
+
+9. delete Отписаться от пользователя api/users/{id}/subscribe/
+
+    Права доступа: авторизованный пользователь
+
+10. get Получить список ингредиентов api/ingredients/
+
+    Права доступа: все
+
+    Ответ:
+
+[
+
+    {
+        "id": 0,
+        "name": "Капуста",
+        "measurement_unit": "кг"
+    }
+
+]
