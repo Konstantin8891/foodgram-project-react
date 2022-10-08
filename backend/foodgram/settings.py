@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATIC_ROOT = "/app/backend_static"
 
-MEDIA_URL = "/api/media_backend/"
+MEDIA_URL = "/media_backend/"
 
 MEDIA_ROOT = "/app/backend_media/"
 
