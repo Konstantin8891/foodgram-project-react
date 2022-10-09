@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from django.contrib import admin
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
@@ -14,7 +13,7 @@ class TagAdmin(admin.ModelAdmin):
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ("name", "measurement_unit")
     list_filter = ("name",)
-    
+
     class Meta:
         verbose_name_plural = "Ингредиенты"
 
@@ -27,7 +26,7 @@ class RecipeAdmin(admin.ModelAdmin):
     def favorites(self, obj):
         fav = Favorite.objects.filter(recipe=obj)
         return fav.count()
-    
+
     class Meta:
         verbose_name_plural = "Рецепты"
 
