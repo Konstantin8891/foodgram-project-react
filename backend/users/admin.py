@@ -13,8 +13,7 @@ class UserAdmin(admin.ModelAdmin):
 class SubscriberAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "author",
-        "re"
+        "author"
     )
 
     class Meta:
