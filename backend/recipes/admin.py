@@ -39,10 +39,10 @@ class RecipeIngredienAdmin(admin.ModelAdmin):
 
 
 class ShoppingCartAdmin(admin.ModelAdmin):
-    list_display = ("author", "recipe", "amount")
+    list_display = ("author", "recipe")
 
     class Meta:
-        verbose_name_plural = "Список покупок"
+        verbose_name_plural = "Рецепт в списке покупок"
 
 
 class FavoriteAdmin(admin.ModelAdmin):
