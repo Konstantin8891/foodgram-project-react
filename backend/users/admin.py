@@ -1,5 +1,6 @@
 from django.contrib import admin
 from users.models import Subscriber, User
+from django.contrib.auth.models import Group
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -22,3 +23,4 @@ class SubscriberAdmin(admin.ModelAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Subscriber, SubscriberAdmin)
+admin.site.unregister(Group)
