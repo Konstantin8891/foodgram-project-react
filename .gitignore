@@ -138,3 +138,7 @@ token
 temp_workflow
 
 docker.zip
+
+backend_media/
+
+backend_static/
