@@ -22,13 +22,13 @@ class UserAdmin(admin.ModelAdmin):
     )
     list_filter = ("first_name", "email")
 
-    def get_urls(self):
+    def get_urls(self, obj):
         urls = super(UserAdmin, self).get_urls()
         urls += [
             path(
                 'download-file/<int:pk>/',
                 self.download_file,
-                name='users_user_download-file'
+                name='users_user_{}'.format(obj.pk)
             ),
         ]
         return urls
@@ -37,7 +37,7 @@ class UserAdmin(admin.ModelAdmin):
     def shopping_cart(self, obj):
         return format_html(
             '<a href="{}">Download file</a>',
-            reverse('admin:users_user_download-file', args=[obj.pk])
+            reverse('admin:users_user_{}'.format(obj.pk), args=[obj.pk])
         )
     # download_link.short_description = "Download file"
 
