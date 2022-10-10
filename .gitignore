@@ -142,3 +142,6 @@ docker.zip
 backend_media/
 
 backend_static/
+
+ingredients.csv
+

@@ -192,7 +192,7 @@ class RecipeViewSet(ModelViewSet):
             recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
             for ingredient in recipe_ingredients:
                 shopping_list.append(
-                    f"{ingredient.recipe}: {ingredient.ingredient}"
+                    f"{ingredient.recipe}: {ingredient.name}"
                     f" - {ingredient.amount}\n"
                 )
         f = open("shopping_cart.txt", "w")
