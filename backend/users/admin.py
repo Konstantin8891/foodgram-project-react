@@ -22,13 +22,13 @@ class UserAdmin(admin.ModelAdmin):
     )
     list_filter = ("first_name", "email")
 
-    def get_urls(self, obj):
+    def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
         urls += [
             path(
                 'download-file/<int:pk>/',
                 self.download_file,
-                name='users_user_{}'.format(obj.pk)
+                name='users_user_{}'.format(pk)
             ),
         ]
         return urls
