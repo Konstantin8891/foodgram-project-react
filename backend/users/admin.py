@@ -1,11 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
+from django.http import HttpResponse
 from django.urls import reverse, path
 from django.utils.html import format_html
 
 from rest_framework.authtoken.models import TokenProxy as BaseToken
 
 from users.models import Subscriber, User, ProxyToken
+from recipes.models import Recipe, RecipeIngredient, ShoppingCart
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -23,7 +25,7 @@ class UserAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
         urls += [
-            path(r'^download-file/(?P<pk>\d+)$', self.download_file, 
+            path(r'^download-file/(?P<pk>\d+)$', self.download_file,
                 name='users_user_download-file'),
         ]
         return urls
@@ -39,11 +41,12 @@ class UserAdmin(admin.ModelAdmin):
     # add custom view function that downloads the file
     # def download_file(self, request, pk):
     #     response = HttpResponse(content_type='application/force-download')
-    #     response['Content-Disposition'] = 'attachment; filename="whatever.txt"')
+    #     response['Content-Disposition'] = (
+    #         'attachment; filename="whatever.txt"'
+    #     )
     #     # generate dynamic file content using object pk
     #     response.write('whatever content')
     #     return response
-
 
     def shopping_cart(self, obj):
         instances = ShoppingCart.objects.filter(author=obj)
