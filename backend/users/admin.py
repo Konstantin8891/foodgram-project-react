@@ -26,7 +26,7 @@ class UserAdmin(admin.ModelAdmin):
     def shopping_cart(self, obj):
         return format_html(
             '<a href="{}">Download file</a>',
-            reverse('recipes:shopping_cart', args=[obj, obj.pk])
+            reverse('recipes:shopping_cart', args=[obj.pk, ])
         )
     # download_link.short_description = "Download file"
 
