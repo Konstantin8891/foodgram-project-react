@@ -62,7 +62,7 @@ class UserAdmin(admin.ModelAdmin):
                     f"{ingredient.recipe}: {ingredient.ingredient.name}"
                     f" - {ingredient.amount}\n"
                 )
-        f = open("shopping_cart.txt", "w")
+        f = open("shopping_cart{}.txt".format(pk), "w")
         for shopping in shopping_list:
             f.write(shopping)
         f.close()
