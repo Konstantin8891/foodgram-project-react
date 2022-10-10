@@ -51,7 +51,7 @@ class UserAdmin(admin.ModelAdmin):
     #     response.write('whatever content')
     #     return response
 
-    def download_file(self, obj):
+    def download_file(self, obj, pk):
         instances = ShoppingCart.objects.filter(author=obj)
         shopping_list = []
         for instance in instances:
