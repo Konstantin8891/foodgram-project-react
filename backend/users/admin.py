@@ -66,7 +66,14 @@ class UserAdmin(admin.ModelAdmin):
         for shopping in shopping_list:
             f.write(shopping)
         f.close()
-        return HttpResponse(shopping_list, content_type="text/plain")
+        response = HttpResponse(content_type='application/force-download')
+        response['Content-Disposition'] = (
+            'attachment; filename="shopping_cart.txt"'
+        )
+        # generate dynamic file content using object pk
+        response.write(f)
+        # return HttpResponse(shopping_list, content_type="text/plain")
+        return response
 
     # def shopping_cart(self, obj):
     #     return format_html(
