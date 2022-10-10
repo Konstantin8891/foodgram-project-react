@@ -5,7 +5,7 @@ from .models import ShoppingCart, Recipe, RecipeIngredient
 
 
 @login_required
-def shopping_cart(obj, pk):
+def shopping_cart(request, obj, pk):
     instances = ShoppingCart.objects.filter(author=obj)
     shopping_list = []
     for instance in instances:
