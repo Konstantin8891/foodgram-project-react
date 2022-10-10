@@ -17,13 +17,14 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["84.201.142.121", "konstantin05.ddns.net", "backend"]
+ALLOWED_HOSTS = ["84.201.142.121", "konstantin05.ddns.net", "backend", "localhost"]
 
 INSTALLED_APPS = [
     "recipes.apps.RecipesConfig",
-    "users.apps.UsersConfig",
+    
     "django.contrib.admin",
     "django.contrib.auth",
+    
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     "djoser",
     "corsheaders",
     "rest_framework.authtoken",
+    "users.apps.UsersConfig",
     "django_filters",
 ]
 
@@ -44,16 +46,15 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "django.middleware.locale.LocaleMiddleware"
 ]
 
 ROOT_URLCONF = "foodgram.urls"
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [TEMPLATES_DIR],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -121,11 +122,9 @@ RECIPE_AMOUNT = 6
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR), "static"]
 
-LOGIN_REDIRECT_URL = "recipes:index"
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+# EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 AUTH_USER_MODEL = "users.User"
 
@@ -152,6 +151,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE":
     10,
     "DEFAULT_AUTHENTICATION_CLASSES":
+    # ["rest_framework.authentication.TokenAuthentication", "rest_framework.authentication.SessionAuthentication"],
     ["rest_framework.authentication.TokenAuthentication", ],
 }
 
@@ -160,3 +160,14 @@ CORS_URLS_REGEX = r"^/api/.*$"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, "locale")
+]
+
+# LANGUAGES = [
+#     ('ru', 'Russian'),
+#     ('en', 'English'),
+# ]
+
+CSRF_TRUSTED_ORIGINS = ['http://konstantin05.ddns.net', 'http://localhost']

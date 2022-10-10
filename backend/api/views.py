@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 
 from rest_framework import status
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -111,6 +112,7 @@ class RecipeViewSet(ModelViewSet):
     pagination_class = SixPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeSearchFilter
+    authentication_classes = [SessionAuthentication, ]
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):

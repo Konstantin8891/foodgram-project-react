@@ -10,11 +10,16 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = "Тэги"
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=150)
     measurement_unit = models.CharField(max_length=100)
 
+    class Meta:
+        verbose_name_plural = "Ингредиенты"
 
 class Recipe(models.Model):
     author = models.ForeignKey(
@@ -43,11 +48,17 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = "Рецепты"
+
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = "Количество ингредиентов в рецепте"
 
 
 class ShoppingCart(models.Model):
@@ -57,6 +68,9 @@ class ShoppingCart(models.Model):
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name="shopping_cart"
     )
+
+    class Meta:
+        verbose_name_plural = "Рецепты в списке покупок"
 
 
 class Favorite(models.Model):
@@ -68,3 +82,6 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name="favorite"
     )
+
+    class Meta:
+        verbose_name_plural = "Избранное"

@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:12
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data5/
     env_file:
       - ./.env
   backend:
