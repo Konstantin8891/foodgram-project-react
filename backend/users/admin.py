@@ -27,14 +27,14 @@ class UserAdmin(admin.ModelAdmin):
         urls += [
             path(
                 r'^download-file/(?P<pk>\d+)$',
-                self.shopping_cart,
+                self.download_file,
                 name='users_user_download-file'
             ),
         ]
         return urls
 
     # custom "field" that returns a link to the custom function
-    def download_link(self, obj):
+    def shopping_cart(self, obj):
         return format_html(
             '<a href="{}">Download file</a>',
             reverse('admin:users_user_download-file', args=[obj.pk])
@@ -51,7 +51,7 @@ class UserAdmin(admin.ModelAdmin):
     #     response.write('whatever content')
     #     return response
 
-    def shopping_cart(self, obj):
+    def download_file(self, obj):
         instances = ShoppingCart.objects.filter(author=obj)
         shopping_list = []
         for instance in instances:
