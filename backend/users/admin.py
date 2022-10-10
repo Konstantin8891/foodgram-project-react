@@ -68,12 +68,12 @@ class UserAdmin(admin.ModelAdmin):
         f.close()
         return HttpResponse(shopping_list, content_type="text/plain")
 
-    def shopping_cart(self, obj):
-        return format_html(
-            '<a href="{}" target="_blank">Download file</a>',
-            reverse('api:recipes-download-shopping-cart')
-        )
-    shopping_cart.short_description = "Download file"
+    # def shopping_cart(self, obj):
+    #     return format_html(
+    #         '<a href="{}" target="_blank">Download file</a>',
+    #         reverse('api:recipes-download-shopping-cart')
+    #     )
+    # shopping_cart.short_description = "Download file"
 
 
 class SubscriberAdmin(admin.ModelAdmin):
