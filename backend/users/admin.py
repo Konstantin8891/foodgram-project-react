@@ -45,7 +45,9 @@ class UserAdmin(admin.ModelAdmin):
     #     shopping_list = []
     #     for instance in instances:
     #         recipe = Recipe.objects.get(name=instance.recipe)
-    #         recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+    #         recipe_ingredients = RecipeIngredient.objects.filter(
+    #             recipe=recipe
+    #         )
     #         for ingredient in recipe_ingredients:
     #             shopping_list.append(
     #                 f"{ingredient.recipe}: {ingredient.ingredient.name}"
