@@ -27,7 +27,7 @@ class UserAdmin(admin.ModelAdmin):
         urls += [
             path(
                 r'^download-file/(?P<pk>\d+)$',
-                self.download_file,
+                self.shopping_cart,
                 name='users_user_download-file'
             ),
         ]
