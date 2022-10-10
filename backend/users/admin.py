@@ -26,7 +26,7 @@ class UserAdmin(admin.ModelAdmin):
         urls = super(UserAdmin, self).get_urls()
         urls += [
             path(
-                r'^download-file/(?P<pk>\d+)$',
+                r'download-file/(?P<pk>\d+)$',
                 self.download_file,
                 name='users_user_download-file'
             ),
@@ -51,7 +51,7 @@ class UserAdmin(admin.ModelAdmin):
     #     response.write('whatever content')
     #     return response
 
-    def download_file(self, obj, pk):
+    def download_file(self, pk, obj):
         instances = ShoppingCart.objects.filter(author=obj)
         shopping_list = []
         for instance in instances:
