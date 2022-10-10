@@ -3,6 +3,7 @@ from django.http import HttpResponse
 
 from .models import ShoppingCart, Recipe, RecipeIngredient
 
+
 @login_required
 def shopping_cart(obj, pk):
     instances = ShoppingCart.objects.filter(author=obj)

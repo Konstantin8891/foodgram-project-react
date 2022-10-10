@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from django.http import HttpResponse
-from django.urls import reverse, path
+# from django.http import HttpResponse
+from django.urls import reverse
 from django.utils.html import format_html
 
 from rest_framework.authtoken.models import TokenProxy as BaseToken
 
 from users.models import Subscriber, User, ProxyToken
-from recipes.models import Recipe, RecipeIngredient, ShoppingCart
+# from recipes.models import Recipe, RecipeIngredient, ShoppingCart
 
 
 class UserAdmin(admin.ModelAdmin):
