@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from django.urls import reverse
+from django.urls import reverse, path
 from django.utils.html import format_html
 
 from rest_framework.authtoken.models import TokenProxy as BaseToken
@@ -19,6 +19,48 @@ class UserAdmin(admin.ModelAdmin):
         "shopping_cart"
     )
     list_filter = ("first_name", "email")
+
+    def get_urls(self):
+        urls = super(UserAdmin, self).get_urls()
+        urls += [
+            path(r'^download-file/(?P<pk>\d+)$', self.download_file, 
+                name='users_user_download-file'),
+        ]
+        return urls
+
+    # custom "field" that returns a link to the custom function
+    def download_link(self, obj):
+        return format_html(
+            '<a href="{}">Download file</a>',
+            reverse('admin:users_user_download-file', args=[obj.pk])
+        )
+    download_link.short_description = "Download file"
+
+    # add custom view function that downloads the file
+    # def download_file(self, request, pk):
+    #     response = HttpResponse(content_type='application/force-download')
+    #     response['Content-Disposition'] = 'attachment; filename="whatever.txt"')
+    #     # generate dynamic file content using object pk
+    #     response.write('whatever content')
+    #     return response
+
+
+    def shopping_cart(self, obj):
+        instances = ShoppingCart.objects.filter(author=obj)
+        shopping_list = []
+        for instance in instances:
+            recipe = Recipe.objects.get(name=instance.recipe)
+            recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+            for ingredient in recipe_ingredients:
+                shopping_list.append(
+                    f"{ingredient.recipe}: {ingredient.ingredient.name}"
+                    f" - {ingredient.amount}\n"
+                )
+        f = open("shopping_cart.txt", "w")
+        for shopping in shopping_list:
+            f.write(shopping)
+        f.close()
+        return HttpResponse(shopping_list, content_type="text/plain")
 
     def shopping_cart(self, obj):
         return format_html(
