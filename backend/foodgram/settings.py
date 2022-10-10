@@ -20,11 +20,8 @@ DEBUG = True
 ALLOWED_HOSTS = ["84.201.142.121", "konstantin05.ddns.net", "backend", "localhost"]
 
 INSTALLED_APPS = [
-    "recipes.apps.RecipesConfig",
-    
     "django.contrib.admin",
     "django.contrib.auth",
-    
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -33,8 +30,9 @@ INSTALLED_APPS = [
     "djoser",
     "corsheaders",
     "rest_framework.authtoken",
-    "users.apps.UsersConfig",
     "django_filters",
+    "users.apps.UsersConfig",
+    "recipes.apps.RecipesConfig",
 ]
 
 MIDDLEWARE = [
@@ -151,7 +149,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE":
     10,
     "DEFAULT_AUTHENTICATION_CLASSES":
-    # ["rest_framework.authentication.TokenAuthentication", "rest_framework.authentication.SessionAuthentication"],
     ["rest_framework.authentication.TokenAuthentication", ],
 }
 
@@ -164,10 +161,5 @@ CORS_ALLOWED_ORIGINS = [
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale")
 ]
-
-# LANGUAGES = [
-#     ('ru', 'Russian'),
-#     ('en', 'English'),
-# ]
 
 CSRF_TRUSTED_ORIGINS = ['http://konstantin05.ddns.net', 'http://localhost']

@@ -21,6 +21,7 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name_plural = "Ингредиенты"
 
+
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
