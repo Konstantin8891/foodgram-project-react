@@ -26,7 +26,7 @@ class UserAdmin(admin.ModelAdmin):
         urls = super(UserAdmin, self).get_urls()
         urls += [
             path(
-                r'download-file/(?P<pk>\d+)$',
+                'download-file/<int:pk>/',
                 self.download_file,
                 name='users_user_download-file'
             ),
