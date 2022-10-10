@@ -39,7 +39,7 @@ class UserAdmin(admin.ModelAdmin):
             '<a href="{}">Download file</a>',
             reverse('admin:users_user_download-file', args=[obj.pk])
         )
-    download_link.short_description = "Download file"
+    # download_link.short_description = "Download file"
 
     # add custom view function that downloads the file
     # def download_file(self, request, pk):
