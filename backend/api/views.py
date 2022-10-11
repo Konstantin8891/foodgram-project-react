@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.db import transaction, IntegrityError
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -132,11 +133,15 @@ class RecipeViewSet(ModelViewSet):
         )
         return Response(serializer.data)
 
+    @transaction.atomic
     def create_instance(self, author, recipe_id, model):
-        obj, created = model.objects.get_or_create(
-            author=author,
-            recipe_id=recipe_id
-        )
+        try:
+            obj, created = model.objects.get_or_create(
+                author=author,
+                recipe_id=recipe_id
+            )
+        except IntegrityError:
+            print("Integrity error occurs while handling transaction")
         if not created:
             raise ValidationError(f"{model.__class__.__name__} already exists")
         serializer_obj = Recipe.objects.get(pk=recipe_id)
