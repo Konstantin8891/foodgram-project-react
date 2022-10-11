@@ -1,4 +1,5 @@
 from django.db import models
+
 from users.models import User
 
 
@@ -69,9 +70,6 @@ class ShoppingCart(models.Model):
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, related_name="shopping_cart"
     )
-
-    class Meta:
-        verbose_name_plural = "Рецепты в списке покупок"
 
 
 class Favorite(models.Model):
