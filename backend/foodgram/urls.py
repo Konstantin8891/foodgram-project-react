@@ -3,11 +3,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from recipes.views import shopping_cart
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("django.contrib.auth.urls")),
     path("api/", include("api.urls", namespace="api")),
     path("recipes/", include("recipes.urls", namespace="recipes")),
+    path("staff/", include([
+        path("shopping_cart/<int:pk>/", shopping_cart, name='shopping_cart') 
+    ]))
 ]
 
 if settings.DEBUG:

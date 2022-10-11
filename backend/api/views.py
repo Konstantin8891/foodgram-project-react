@@ -112,7 +112,6 @@ class RecipeViewSet(ModelViewSet):
     pagination_class = SixPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeSearchFilter
-    authentication_classes = [SessionAuthentication, ]
 
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
