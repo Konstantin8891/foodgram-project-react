@@ -24,6 +24,8 @@ def shopping_cart(request, pk):
         print(shopping_list)
         f = ContentFile('/n'.join(shopping_list))
         response = FileResponse(f.read(), content_type="text/plain")
-        response['Content-Disposition'] = 'attachment; filename=%s' % 'shopping_cart.txt'
+        response[
+            'Content-Disposition'
+        ] = 'attachment; filename=shopping_cart.txt'
         return response
     return Response(status=status.HTTP_400_BAD_REQUEST)
