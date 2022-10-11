@@ -9,9 +9,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("django.contrib.auth.urls")),
     path("api/", include("api.urls", namespace="api")),
-    path("recipes/", include("recipes.urls", namespace="recipes")),
     path("staff/", include([
-        path("shopping_cart/<int:pk>/", shopping_cart, name='shopping_cart') 
+        path("shopping_cart/<int:pk>/", shopping_cart, name='shopping_cart')
     ]))
 ]
 

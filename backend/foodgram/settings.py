@@ -1,4 +1,5 @@
 import os
+
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -44,7 +45,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "django.middleware.locale.LocaleMiddleware"
 ]
 
 ROOT_URLCONF = "foodgram.urls"
@@ -120,10 +120,6 @@ RECIPE_AMOUNT = 6
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR), "static"]
 
-# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-
-# EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
-
 AUTH_USER_MODEL = "users.User"
 
 DJOSER = {
@@ -156,10 +152,6 @@ CORS_URLS_REGEX = r"^/api/.*$"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-]
-
-LOCALE_PATHS = [
-    os.path.join(BASE_DIR, "locale")
 ]
 
 CSRF_TRUSTED_ORIGINS = ['http://konstantin05.ddns.net', 'http://localhost']

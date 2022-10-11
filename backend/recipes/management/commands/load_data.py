@@ -14,8 +14,7 @@ class Command(BaseCommand):
             return
         print("Loading ingredients data")
         try:
-            # ingredients_dict = DictReader(open("../data/ingredients.csv"))
-            ingredients_dict = DictReader(open("./ingredients.csv"))
+            ingredients_dict = DictReader(open("../data/ingredients.csv"))
         except Exception:
             FileNotFoundError("Can't open file")
         try:
