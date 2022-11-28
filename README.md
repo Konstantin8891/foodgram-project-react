@@ -106,27 +106,52 @@ sudo docker-compose exec backend python manage.py load_data
     "previous": "http://foodgram.example.org/api/recipes/?page=2",
     "results": 
 
-[
+    [
 
-{
+    {
 
-    "id": 0,
-    "tags": 
+        "id": 0,
+        "tags": 
 
-[],
-"author": 
-{},
-"ingredients": 
+        [
 
-            [],
-            "is_favorited": true,
-            "is_in_shopping_cart": true,
-            "name": "string",
-            "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
-            "text": "string",
-            "cooking_time": 1
+        {
+            "id": 0,
+            "name": "Завтрак",
+            "color": "#E26C2D",
+            "slug": "breakfast"
         }
-    ]
+
+        ],
+        "author": 
+            {
+
+                "email": "user@example.com",
+                "id": 0,
+                "username": "string",
+                "first_name": "Вася",
+                "last_name": "Пупкин",
+                "is_subscribed": false
+            },
+
+        "ingredients": 
+            [
+
+            {
+                 "id": 0,
+                 "name": "Картофель отварной",
+                 "measurement_unit": "г",
+                 "amount": 1
+            }
+            ],
+        "is_favorited": true,
+        "is_in_shopping_cart": true,
+        "name": "string",
+        "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+        "text": "string",
+        "cooking_time": 1
+    }
+]
 
 }
 
@@ -138,15 +163,15 @@ sudo docker-compose exec backend python manage.py load_data
 
     "ingredients": 
 
-[
+    [
 
     {
         "id": 1123,
         "amount": 10
     }
 
-],
-"tags": 
+    ],
+   "tags": 
 
     [
         1,
@@ -204,23 +229,24 @@ sudo docker-compose exec backend python manage.py load_data
 
     Ответ:
 
+
 {
     "id": 0,
     "tags": 
-[
+    [
     {}
-],
-"author": 
-{
-    "email": "user@example.com",
-    "id": 0,
-    "username": "string",
-    "first_name": "Вася",
-    "last_name": "Пупкин",
-    "is_subscribed": false
-},
-"ingredients": 
-[
+    ],
+    "author": 
+    {
+        "email": "user@example.com",
+        "id": 0,
+        "username": "string",
+        "first_name": "Вася",
+        "last_name": "Пупкин",
+        "is_subscribed": false
+    },
+    "ingredients": 
+    [
         {}
     ],
     "is_favorited": true,
@@ -264,21 +290,20 @@ sudo docker-compose exec backend python manage.py load_data
     "previous": "http://foodgram.example.org/api/users/subscriptions/?page=2",
     "results": 
 
-[
+    [
 
-{
+    {
 
-    "email": "user@example.com",
-    "id": 0,
-    "username": "string",
-    "first_name": "Вася",
-    "last_name": "Пупкин",
-    "is_subscribed": true,
-    "recipes": 
-
+        "email": "user@example.com",
+        "id": 0,
+        "username": "string",
+        "first_name": "Вася",
+        "last_name": "Пупкин",
+        "is_subscribed": true,
+        "recipes": 
             [],
-            "recipes_count": 0
-        }
+        "recipes_count": 0
+    }
     ]
 
 }
@@ -299,7 +324,7 @@ sudo docker-compose exec backend python manage.py load_data
     "is_subscribed": true,
     "recipes": 
 
-[
+    [
 
         {
             "id": 0,
@@ -513,23 +538,23 @@ All requests are presented in /api/docs/ endpoint
 
 }
 
-3. post Добавление нового рецепта api/recipes
+3. POST Add new recipe api/recipes
 
-    Запрос:
+    Request:
 
 {
 
     "ingredients": 
 
-[
+    [
 
     {
         "id": 1123,
         "amount": 10
     }
 
-],
-"tags": 
+    ],
+   "tags": 
 
     [
         1,
@@ -542,9 +567,9 @@ All requests are presented in /api/docs/ endpoint
 
 }
 
-    Права доступа: авторизованный пользователь
+    Access: authorized user
 
-    Ответ:
+    Response:
 
 {
 
@@ -581,29 +606,29 @@ All requests are presented in /api/docs/ endpoint
 
 }
 
-4. get Получение рецепта api/recipes/{recipe_id}/
+4. GET get recipe api/recipes/{recipe_id}/
 
-    Права доступа: все
+    Access: all
 
-    Ответ:
+    Response:
 
 {
     "id": 0,
     "tags": 
-[
+    [
     {}
-],
-"author": 
-{
-    "email": "user@example.com",
-    "id": 0,
-    "username": "string",
-    "first_name": "Вася",
-    "last_name": "Пупкин",
-    "is_subscribed": false
-},
-"ingredients": 
-[
+    ],
+    "author": 
+    {
+        "email": "user@example.com",
+        "id": 0,
+        "username": "string",
+        "first_name": "Вася",
+        "last_name": "Пупкин",
+        "is_subscribed": false
+    },
+    "ingredients": 
+    [
         {}
     ],
     "is_favorited": true,
@@ -615,11 +640,11 @@ All requests are presented in /api/docs/ endpoint
 
 }
 
-5. post Добавить рецепт в избранное api/recipes/{id}/favorite/
+5. POST Add recipe to favorites api/recipes/{id}/favorite/
 
-    Права доступа: авторизованный пользователь
+    Access: authorized user
 
-    Ответ:
+    Response:
 
 {
 
@@ -630,15 +655,15 @@ All requests are presented in /api/docs/ endpoint
 
 }
 
-6. delete Удалить рецепт из избранного api/recipes/{id}/favorite/
+6. DELETE Delete recipe from favorites api/recipes/{id}/favorite/
 
-Права доступа: авторизованный пользователь
+Access: authorized user
 
-7. get Получить список подписок api/users/subscriptions/
+7. GET Get subscriptions api/users/subscriptions/
 
-    Права доступа: авторизованный пользователь 
+    Access: authorized user 
     
-    Ответ:
+    Response:
 
 {
 
@@ -647,30 +672,29 @@ All requests are presented in /api/docs/ endpoint
     "previous": "http://foodgram.example.org/api/users/subscriptions/?page=2",
     "results": 
 
-[
+    [
 
-{
+    {
 
-    "email": "user@example.com",
-    "id": 0,
-    "username": "string",
-    "first_name": "Вася",
-    "last_name": "Пупкин",
-    "is_subscribed": true,
-    "recipes": 
-
+        "email": "user@example.com",
+        "id": 0,
+        "username": "string",
+        "first_name": "Вася",
+        "last_name": "Пупкин",
+        "is_subscribed": true,
+        "recipes": 
             [],
-            "recipes_count": 0
-        }
+        "recipes_count": 0
+    }
     ]
 
 }
 
-8. post Подписаться на пользователя api/users/{id}/subscribe/
+8. POST Subscribe to user api/users/{id}/subscribe/
 
-    Права доступа: авторизованный пользователь.
+    Access: authorized user.
 
-    Ответ:
+    Response:
 
 {
 
@@ -682,7 +706,7 @@ All requests are presented in /api/docs/ endpoint
     "is_subscribed": true,
     "recipes": 
 
-[
+    [
 
         {
             "id": 0,
@@ -695,15 +719,15 @@ All requests are presented in /api/docs/ endpoint
 
 }
 
-9. delete Отписаться от пользователя api/users/{id}/subscribe/
+9. DELETE Unsubsribe api/users/{id}/subscribe/
 
-    Права доступа: авторизованный пользователь
+    Access: authorized user
 
-10. get Получить список ингредиентов api/ingredients/
+10. GET Get all ingredients api/ingredients/
 
-    Права доступа: все
+    Access: all
 
-    Ответ:
+    Response:
 
 [
 
@@ -714,3 +738,7 @@ All requests are presented in /api/docs/ endpoint
     }
 
 ]
+
+Backend by Konstantin Vasilyev
+
+Frontend by Yandex Practicum
