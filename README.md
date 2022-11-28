@@ -364,7 +364,7 @@ sudo docker-compose exec backend python manage.py load_data
 
 # Culinary site
 
-Users can exchange recipes using this site. User can add recipes to favorites, subscribe to authors. You can download shopping list for the recipes that you add in shopping cart and filter recipes by tags. If the user is unauthorized he can view recipes. All used models were added to admin panel. 
+Users can exchange recipes using this site. User can add recipes to favorites, subscribe to authors. You can download shopping list for the recipes that you add in shopping cart and filter recipes by tags. If the user is unauthorized, he can view recipes. All used models were added to admin panel. 
 
 ## Stack
 
@@ -392,11 +392,11 @@ sudo docker-compose exec backend python manage.py load_data
 
 ## For authorized users
 
-Main page is available.
+The main page is available.
 
-Page of other users is available.
+Pages of other users are available.
 
-Page of recipe is available.
+Pages of recipes are available.
 
 Subscription's page is available.
 
@@ -408,21 +408,21 @@ Subscription's page is available.
 
 Favorite's page is available.
 
-1. You can add recipe to favorites and delete it from favorites on the recipe's page. 
+1. You can add a recipe to favorites and delete it from favorites on the recipe's page. 
 
-2. You can add recipe to favorites and delete it from favorites on any page with the list of recipes.
+2. You can add a recipe to favorites and delete it from favorites on any page with the list of recipes.
 
 Page "Shopping list" is available.
 
-1. You can add recipe in shopping list and delete it from it.
+1. You can add a recipe in shopping list and delete it from it.
 
-2. You can add recipe to shopping list and delete it from it.
+2. You can add a recipe to shopping list and delete it from it.
 
-3. You can download file with the list of ingredients of all recipes of shopping list.
+3. You can download the file with the list of ingredients of all recipes of shopping list.
 
 Page "Create recipe" is available.
 
-1. You can publish you recipe.
+1. You can publish your recipe.
 
 2. You can edit your recipe.
 
@@ -430,13 +430,13 @@ Page "Create recipe" is available.
 
 Password editing form is available.
 
-You can logout.
+You can log out.
 
 ## Unauthorized users
 
 Main page is available.
 
-Page of recipe is available.
+Pages of recipes are available.
 
 Authorization form is available.
 
@@ -483,7 +483,7 @@ All requests are presented in /api/docs/ endpoint
 
 2. GET Get all recipes api/recipes/
 
-    Accesss: all.
+    Access: all.
     
     Response:
 
@@ -729,7 +729,7 @@ Access: authorized user
 
 }
 
-9. DELETE Unsubsribe api/users/{id}/subscribe/
+9. DELETE Unsubscribe api/users/{id}/subscribe/
 
     Access: authorized user
 
