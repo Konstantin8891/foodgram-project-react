@@ -231,11 +231,16 @@ sudo docker-compose exec backend python manage.py load_data
 
 
 {
+
     "id": 0,
     "tags": 
+    
     [
+    
     {}
+    
     ],
+    
     "author": 
     {
         "email": "user@example.com",
@@ -613,11 +618,16 @@ All requests are presented in /api/docs/ endpoint
     Response:
 
 {
+
     "id": 0,
     "tags": 
+    
     [
+    
     {}
+    
     ],
+    
     "author": 
     {
         "email": "user@example.com",
